@@ -32,9 +32,11 @@ app.post('/consultar', async (req, res) => {
 
     if (resultado) {
       res.json({
+        
         lugar: resultado.escuela,
         mesa: resultado.mesa,
-        departamento: resultado.Departamento
+        nombre: resultado.nombre,
+        departamento: resultado.departamento
       });
     } else {
       res.json({ lugar: null });
