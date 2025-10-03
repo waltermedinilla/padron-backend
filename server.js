@@ -22,8 +22,8 @@ app.post('/consultar', async (req, res) => {
     client = new MongoClient(process.env.MONGODB_URI);
     await client.connect();
 
-    const db = client.db(process.env.DB_NAME); // debe ser "usuarios"
-    const collection = db.collection(process.env.COLLECTION_NAME); // debe ser "padron2"
+    const db = client.db(process.env.DB_NAME);
+    const collection = db.collection(process.env.COLLECTION_NAME);
 
     const resultado = await collection.findOne({ dni: parseInt(dni, 10) });
 
@@ -32,7 +32,7 @@ app.post('/consultar', async (req, res) => {
         nombre: resultado.nombre,
         lugar: resultado.escuela,
         mesa: resultado.mesa,
-        departamento: resultado.Departamento // ← ¡D mayúscula!
+        departamento: resultado.Departamento // ← D mayúscula, como en la BD
       });
     } else {
       res.json({ lugar: null });
