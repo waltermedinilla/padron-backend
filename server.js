@@ -1,16 +1,13 @@
 // server.js
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors'); // <-- nuevo
+const cors = require('cors');
 const { MongoClient } = require('mongodb');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Habilitar CORS para desarrollo
 app.use(cors());
-
-// Middleware para leer JSON
 app.use(express.json());
 
 app.post('/consultar', async (req, res) => {
@@ -25,34 +22,33 @@ app.post('/consultar', async (req, res) => {
     client = new MongoClient(process.env.MONGODB_URI);
     await client.connect();
 
-    const db = client.db(process.env.DB_NAME);
-    const collection = db.collection(process.env.COLLECTION_NAME);
+    const db = client.db(process.env.DB_NAME); // debe ser "usuarios"
+    const collection = db.collection(process.env.COLLECTION_NAME); // debe ser "padron2"
 
     const resultado = await collection.findOne({ dni: parseInt(dni, 10) });
 
     if (resultado) {
       res.json({
-        
+        nombre: resultado.nombre,
         lugar: resultado.escuela,
         mesa: resultado.mesa,
-        nombre: resultado.nombre,
-        departamento: resultado.departamento
+        departamento: resultado.Departamento // ← ¡D mayúscula!
       });
     } else {
       res.json({ lugar: null });
     }
   } catch (error) {
-    console.error('Error en la consulta:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error interno' });
   } finally {
     if (client) await client.close();
   }
 });
 
 app.get('/', (req, res) => {
-  res.send('Backend de consulta de padrón funcionando ✅');
+  res.send('Backend funcionando ✅');
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor en puerto ${PORT}`);
 });
